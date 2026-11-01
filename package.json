@@ -1,0 +1,1 @@
+{"name":"ai-marker-backend","version":"1.0.0","private":true,"description":"Backend marking service for AI Past Paper Marker (no dependencies, Node 18+)","scripts":{"start":"node server.js","test":"node --test marking.test.js"

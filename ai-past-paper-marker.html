@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Past Paper Marker</title>
+<style>
+:root{--navy:#0b1f4d;--blue:#3b82f6;--soft:#e8f0fe;--bg:#fff;--card:#fff;--ink:#0f1b3d;--mut:#5b6785;--line:#dbe4f5;--ok:#15803d;--bad:#b91c1c;--part:#b45309;--btn:#0b1f4d;--btnink:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1226;--card:#101a36;--soft:#16254a;--ink:#e8eefc;--mut:#9fb0d6;--line:#24345f;--ok:#4ade80;--bad:#f87171;--part:#fbbf24;--btn:#3b82f6;--btnink:#fff;color-scheme:dark}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 .5em;color:var(--ink)}
+h1{font-size:clamp(2rem,6vw,3.2rem)}h2{font-size:1.6rem}h3{font-size:1.15rem}
+p{margin:0 0 1em}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:11;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{max-width:1100px;margin:auto;padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.logo{font-family:Georgia,serif;font-weight:700;font-size:1.15rem;color:var(--ink);text-decoration:none}
+.logo i{font-style:normal;color:var(--blue)}
+nav{display:flex;gap:.25rem}
+nav a{padding:.45rem .8rem;border-radius:8px;color:var(--mut);text-decoration:none;font-weight:600;font-size:.95rem}
+nav a.on,nav a:hover{background:var(--soft);color:var(--ink)}
+main{max-width:1100px;margin:auto;padding:1.5rem 1rem 3rem}
+.btn{display:inline-block;border:0;border-radius:10px;padding:.75rem 1.3rem;background:var(--btn);color:var(--btnink);font:600 1rem inherit;font-family:inherit;cursor:pointer;text-decoration:none}
+.btn.alt{background:var(--soft);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.hero{background:var(--navy);color:#fff;border-radius:18px;padding:clamp(1.5rem,5vw,3.5rem)}
+.hero h1,.hero p{color:#fff}.hero p{color:#c9d8f7;max-width:36rem;font-size:1.1rem}
+.hero .btn{background:#fff;color:var(--navy)}.hero .btn.alt{background:#1d3a7a;color:#fff}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:1rem 0 2rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem}
+.card.soft{background:var(--soft)}
+.tag{display:inline-block;background:var(--soft);border-radius:99px;padding:.1rem .7rem;font-size:.8rem;font-weight:600;color:var(--mut)}
+.stat b{display:block;font:700 2rem Georgia,serif}
+.mut{color:var(--mut)}
+.row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.sp{justify-content:space-between}
+.bars .b{height:10px;background:var(--soft);border-radius:9px;overflow:hidden;margin:.2rem 0 .8rem}
+.bars .b span{display:block;height:100%;background:var(--blue)}
+input[type=text],textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:.65rem .8rem;font:inherit;background:var(--bg);color:var(--ink)}
+textarea{min-height:70px;resize:vertical}
+label{font-weight:600;font-size:.9rem;display:block;margin:.6rem 0 .25rem}
+.timer{position:sticky;top:calc(env(safe-area-inset-top,0px) + 3.4rem);z-index:5;background:var(--navy);color:#fff;border-radius:12px;padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.timer b{font:700 1.4rem ui-monospace,Menlo,monospace}
+.timer.low b{color:#fca5a5}
+.q .num{font-weight:700;color:var(--blue)}
+.step{display:flex;gap:.7rem;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--line)}
+.dot{width:26px;height:26px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-weight:700;font-size:.85rem}
+.dot.done{background:var(--ok);color:#fff}.dot.run{background:var(--blue);color:#fff}
+.ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--blue) calc(var(--p)*1%),var(--soft) 0)}
+.ring div{width:112px;height:112px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font:700 1.9rem Georgia,serif}
+.ok{color:var(--ok)}.no{color:var(--bad)}.pt{color:var(--part)}
+ul.crit{list-style:none;padding:0;margin:.4rem 0}
+ul.crit li{padding:.15rem 0}
+.corr{border-left:4px solid var(--line);padding-left:.9rem}
+.corr.full{border-color:var(--ok)}.corr.part{border-color:var(--part)}.corr.zero{border-color:var(--bad)}
+.note{font-size:.88rem;color:var(--mut);border-top:1px solid var(--line);margin-top:2rem;padding-top:1rem}
+@media(max-width:560px){nav a{padding:.4rem .55rem;font-size:.88rem}.bar{padding:.5rem .8rem}}
+.drop{border-style:dashed}.drop.over{background:var(--soft)}
+.thumb{max-width:100%;max-height:200px;border:1px solid var(--line);border-radius:8px;display:block;margin:.5rem 0}
+select,input[type=number]{border:1px solid var(--line);border-radius:10px;padding:.5rem .6rem;font:inherit;background:var(--bg);color:var(--ink)}
+.pre{white-space:pre-wrap}pre.pre{background:var(--soft);border-radius:8px;padding:.6rem;max-height:200px;overflow:auto;font-size:.85rem}
+.warn{background:var(--soft);border-left:4px solid var(--part);border-radius:8px;padding:.6rem .8rem;margin:.6rem 0}
+.corr.review{border-color:var(--part)}
+.opt{display:flex;gap:.5rem;align-items:center;padding:.25rem 0;font-weight:400}
+@media(prefers-reduced-motion:no-preference){.hero{animation:in .5s ease-out}@keyframes in{from{opacity:0;transform:translateY(8px)}}}
+</style></head>
+<body>
+<header><div class="bar"><a class="logo" href="#home">Past Paper <i>Marker</i></a>
+<nav><a href="#home" data-v="home">Home</a><a href="#dashboard" data-v="dashboard">Dashboard</a><a href="#exam" data-v="exam">Exam</a><a href="#upload" data-v="upload">Upload</a><a href="#admin" data-v="admin">Admin</a></nav></div></header>
+<main id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+/* ===== 1. DATA: questions + marking schemes (swap for a server/API source later) ===== */
+const N=s=>String(s||'').toLowerCase().replace(/[\s$£,]/g,'').replace(/²/g,'^2').replace(/[−–]/g,'-').replace(/[×·*]/g,'*').replace(/√/g,'sqrt');
+function V(s){let t=N(s).replace(/^[a-z]+=/,'').replace(/(cm|%)$/,'');const f=t.match(/^(-?[\d.]+)\/([\d.]+)$/);return f?+f[1]/+f[2]:(t===''?NaN:Number(t))}
+const eq=(a,x)=>Math.abs(V(a)-x)<1e-3;
+const QUESTIONS=[
+{id:1,topic:'Algebra: equations',marks:3,text:'Solve 3x − 7 = 11.',model:'x = 6',
+ scheme:[{t:'M',d:'Adds 7 to both sides (3x = 18)',ok:(a,w)=>/3x=18|18/.test(N(w))||eq(a,6)},
+ {t:'M',d:'Divides by 3',ok:(a,w)=>/18\/3|=6|x=6/.test(N(w))||eq(a,6)},
+ {t:'A',d:'Correct answer x = 6',ok:a=>eq(a,6)}],
+ errors:[{ok:a=>eq(a,4/3),m:'You subtracted 7 instead of adding it. To undo “−7”, add 7 to both sides: 3x = 18.'},{ok:a=>eq(a,6.667)||eq(a,20/3),m:'It looks like you divided before moving the 7. Do the addition first, then divide.'}],
+ why:'Add 7 to both sides to get 3x = 18, then divide both sides by 3 to get x = 6.',
+ tip:'Practise two-step equations: undo addition/subtraction first, then multiplication/division.'},
+{id:2,topic:'Algebra: expanding brackets',marks:3,text:'Expand and simplify (x + 3)(x − 2).',model:'x² + x − 6',
+ scheme:[{t:'B',d:'Has an x² term',ok:a=>/x\^2/.test(N(a))},
+ {t:'B',d:'Has the correct x term (+x)',ok:a=>/x\^2\+x(?!\^)/.test(N(a))||/\+x-6$/.test(N(a))},
+ {t:'B',d:'Has the correct constant (−6)',ok:a=>/-6$/.test(N(a))}],
+ errors:[{ok:a=>/x\^2\+5x/.test(N(a)),m:'The x terms are +3x and −2x, which combine to +x. You added 3 and 2 instead of finding 3 − 2.'},{ok:a=>/\+6$/.test(N(a)),m:'The constant is 3 × (−2) = −6. Watch the sign.'}],
+ why:'Multiply every term: x·x = x², x·(−2) = −2x, 3·x = 3x, 3·(−2) = −6. Then −2x + 3x = x, giving x² + x − 6.',
+ tip:'Use a grid or FOIL to expand double brackets, and check each sign before collecting terms.'},
+{id:3,topic:'Geometry: Pythagoras',marks:3,text:'A right-angled triangle has shorter sides of 8 cm and 15 cm. Calculate the length of the hypotenuse.',model:'17 cm',
+ scheme:[{t:'M',d:'Squares and adds: 8² + 15² (= 289)',ok:(a,w)=>/64|225|8\^2|15\^2|289/.test(N(w))||eq(a,17)},
+ {t:'M',d:'Square roots the total: √289',ok:(a,w)=>/289|sqrt/.test(N(w))&&(eq(a,17)||/sqrt|√/.test(N(w)))||eq(a,17)},
+ {t:'A',d:'Correct answer 17 cm',ok:a=>eq(a,17)}],
+ errors:[{ok:a=>eq(a,23),m:'8 + 15 = 23 simply adds the sides. Pythagoras needs a² + b² = c², so square first.'},{ok:a=>eq(a,289),m:'289 is c². You need one more step: take the square root.'}],
+ why:'c² = 8² + 15² = 64 + 225 = 289, so c = √289 = 17 cm.',
+ tip:'Write a² + b² = c² first, substitute, then finish with a square root.'},
+{id:4,topic:'Probability',marks:2,text:'A bag contains 4 red, 3 blue and 3 green counters. One counter is picked at random. Find the probability that it is not red. Give your answer as a fraction, decimal or percentage.',model:'6/10 (= 3/5 = 0.6 = 60%)',
+ scheme:[{t:'M',d:'Uses 10 counters in total, or 6 non-red, or 1 − 4/10',ok:(a,w)=>/10|1-4\/10|6\/10/.test(N(w))||eq(a,0.6)||eq(a,60)},
+ {t:'A',d:'Correct probability 3/5 (0.6 or 60%)',ok:a=>eq(a,0.6)||(/%$/.test(N(a))&&eq(a,60))}],
+ errors:[{ok:a=>eq(a,0.4)||eq(a,40),m:'4/10 is the probability of red. The question asks for “not red”, so use 1 − 4/10 or count 3 + 3 = 6 counters.'},{ok:a=>eq(a,0.5),m:'Count carefully: 6 of the 10 counters are not red, giving 6/10.'}],
+ why:'There are 3 + 3 = 6 non-red counters out of 10, so P(not red) = 6/10 = 3/5.',
+ tip:'For “not” questions, use P(not A) = 1 − P(A).'},
+{id:5,topic:'Percentages',marks:2,text:'A coat costs $80. In a sale the price is reduced by 15%. Work out the sale price.',model:'$68',
+ scheme:[{t:'M',d:'Finds 15% of 80 (= 12) or multiplies by 0.85',ok:(a,w)=>/0\.85|12|15\/100|0\.15/.test(N(w))||eq(a,68)},
+ {t:'A',d:'Correct answer $68',ok:a=>eq(a,68)}],
+ errors:[{ok:a=>eq(a,12),m:'$12 is the discount, not the sale price. Subtract it from $80.'},{ok:a=>eq(a,65),m:'You subtracted 15 rather than 15%. 15% of 80 is 12, so the price is 80 − 12.'}],
+ why:'15% of 80 = 0.15 × 80 = 12, so the sale price is 80 − 12 = $68. (Or 80 × 0.85 = 68.)',
+ tip:'Use multipliers: a 15% decrease is × 0.85.'}];
+const TOTAL=QUESTIONS.reduce((s,q)=>s+q.marks,0), EXAM_SECS=20*60;
+
+/* ===== 2. MARKING ENGINE: rule-based, NOT an AI model. ===== */
+/* To use a real AI later, replace MarkingProvider.mark with a fetch() to your backend returning the same shape. */
+const MarkingProvider={name:'Local rule-based marking engine',
+ async mark(q,r){
+  const a=r.answer||'',w=(r.work||'')+' '+a,blank=!N(a)&&!N(r.work);
+  const crit=q.scheme.map(c=>({d:c.d,t:c.t,hit:!blank&&!!c.ok(a,w)}));
+  const got=crit.filter(c=>c.hit).length, full=got===q.marks;
+  let why=full?'Full marks. Well done.':blank?'No answer given. '+q.why:'';
+  if(!full&&!blank){const e=q.errors.find(e=>e.ok(a));why=(e?e.m+' ':'')+'Method: '+q.why}
+  return{qid:q.id,got,max:q.marks,answer:a,work:r.work||'',crit,why}}};
+async function markPaper(responses,onStep){const out=[];
+ for(const q of QUESTIONS){onStep(q.id,'run');await new Promise(r=>setTimeout(r,450));
+  out.push(await MarkingProvider.mark(q,responses[q.id]||{}));onStep(q.id,'done',out[out.length-1])}
+ return out}
+
+/* ===== 3. STATE + STORAGE ===== */
+let DB={name:'',attempts:[]};
+try{DB=Object.assign(DB,JSON.parse(localStorage.getItem('apm')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('apm',JSON.stringify(DB))}catch(e){}};
+const S={exam:null,timer:null,viewId:null,marking:null};
+const $=s=>document.querySelector(s), app=$('#app');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const avg=()=>DB.attempts.length?Math.round(DB.attempts.reduce((s,a)=>s+a.pct,0)/DB.attempts.length):0;
+
+/* ===== 4. VIEWS ===== */
+const V_={
+home(){return`<section class="hero"><h1>Practise past papers. Know exactly where you lost marks.</h1>
+<p>Answer exam-style questions under timed conditions, then get a mark-by-mark breakdown, corrections and a plan for what to revise next.</p>
+<div class="row"><a class="btn" href="#exam">Start practising</a><a class="btn alt" href="#upload">Upload your own papers</a><a class="btn alt" href="#dashboard">View dashboard</a></div></section>
+<h2 style="margin-top:2rem">What you get</h2><div class="grid">
+${[['Timed practice','A countdown timer that mirrors real exam pressure.'],['Mark-scheme marking','Method (M), accuracy (A) and independent (B) marks, with partial credit.'],['Clear corrections','See the right answer and why yours lost marks.'],['Progress tracking','Scores and topic strengths saved in your browser.']].map(f=>`<div class="card"><h3>${f[0]}</h3><p class="mut" style="margin:0">${f[1]}</p></div>`).join('')}</div>
+<h2>Available subjects</h2><div class="grid">
+<div class="card soft"><span class="tag">Available now</span><h3 style="margin-top:.6rem">IGCSE Mathematics</h3><p class="mut">5 questions, ${TOTAL} marks, 20 minutes.</p><a class="btn" href="#exam">Practise</a></div>
+${['IGCSE Physics','IGCSE Chemistry','IGCSE English'].map(s=>`<div class="card"><span class="tag">Coming soon</span><h3 style="margin-top:.6rem">${s}</h3><p class="mut">Not yet available in this prototype.</p></div>`).join('')}</div>
+<p class="note">Prototype note: marking uses a local rule-based JavaScript engine that checks answers against sample mark schemes. It is not an AI model.</p>`},
+
+dashboard(){const A=DB.attempts,best=A.length?Math.max(...A.map(a=>a.pct)):0;
+ const tp={};A.forEach(a=>a.results.forEach(r=>{const q=QUESTIONS.find(x=>x.id===r.qid);if(!q)return;tp[q.topic]=tp[q.topic]||[0,0];tp[q.topic][0]+=r.got;tp[q.topic][1]+=r.max}));
+ return`<div class="card soft"><h2>Welcome${DB.name?', '+esc(DB.name):''}</h2>
+<div class="row"><input type="text" id="nm" placeholder="Your name" value="${esc(DB.name)}" style="max-width:240px" aria-label="Your name"><button class="btn alt" id="svn">Save name</button></div></div>
+<div class="grid"><div class="card stat"><b>${A.length}</b>Attempts</div><div class="card stat"><b>${avg()}%</b>Average score</div><div class="card stat"><b>${best}%</b>Best score</div></div>
+<h2>Choose a subject</h2><div class="grid"><div class="card"><h3>IGCSE Mathematics</h3><p class="mut">Algebra, geometry, probability and percentages.</p><a class="btn" href="#exam">Start paper</a></div>
+<div class="card"><h3>More subjects</h3><p class="mut">Physics, Chemistry and English are coming later.</p></div></div>
+<h2>Progress by topic</h2><div class="card bars">${Object.keys(tp).length?Object.keys(tp).map(k=>{const p=Math.round(tp[k][0]/tp[k][1]*100);return`<div class="row sp"><span>${k}</span><b>${p}%</b></div><div class="b"><span style="width:${p}%"></span></div>`}).join(''):'<p class="mut" style="margin:0">Complete a paper to see your topic strengths here.</p>'}</div>
+<h2 style="margin-top:1.5rem">Recent attempts</h2>
+${A.length?A.slice(-5).reverse().map(a=>`<div class="card row sp" style="margin-bottom:.6rem"><div><b>${a.subject}</b><div class="mut">${new Date(a.date).toLocaleString()}, ${fmt(a.secs)} used</div></div><div class="row"><b>${a.score}/${a.total} (${a.pct}%)</b><button class="btn alt" data-view="${a.id}">Review</button></div></div>`).join('')+'<button class="btn alt" id="clr">Clear history</button>':'<div class="card"><p class="mut" style="margin:0">No attempts yet. <a href="#exam">Start your first paper.</a></p></div>'}`},
+
+exam(){const E=S.exam;
+ if(!E)return`<h2>Choose a paper</h2><div class="grid"><div class="card soft"><span class="tag">Selected</span><h3 style="margin-top:.6rem">IGCSE Mathematics</h3><p class="mut">${QUESTIONS.length} questions · ${TOTAL} marks · 20 minutes. Show your working: method marks are awarded.</p><button class="btn" id="begin">Begin exam</button></div>
+<div class="card"><h3>Other subjects</h3><p class="mut">Coming soon.</p></div></div>`;
+ return`<div class="timer" id="tbox"><span>IGCSE Mathematics</span><b id="tm">${fmt(E.left)}</b></div>
+${QUESTIONS.map(q=>`<div class="card q" style="margin-bottom:1rem"><div class="row sp"><span class="num">Question ${q.id}</span><span class="tag">${q.marks} marks</span></div><p style="margin:.5rem 0"><b>${q.text}</b></p>
+<label for="w${q.id}">Working (optional, earns method marks)</label><textarea id="w${q.id}" data-q="${q.id}" data-f="work">${esc((E.r[q.id]||{}).work||'')}</textarea>
+<label for="a${q.id}">Final answer</label><input type="text" id="a${q.id}" data-q="${q.id}" data-f="answer" value="${esc((E.r[q.id]||{}).answer||'')}" autocomplete="off"></div>`).join('')}
+<div class="row"><button class="btn" id="submit">Submit for marking</button><button class="btn alt" id="quit">Abandon paper</button></div>`},
+
+marking(){return`<h2>Marking your paper</h2><p class="mut">Running the ${MarkingProvider.name}. Each answer is checked against its mark scheme.</p><div class="card">
+${QUESTIONS.map(q=>`<div class="step"><span class="dot" id="d${q.id}">${q.id}</span><span style="flex:1">${q.topic}</span><b id="m${q.id}" class="mut">waiting</b></div>`).join('')}</div>
+<p style="margin-top:1rem"><button class="btn" id="seeres" disabled>View results</button></p>`},
+
+results(){const a=DB.attempts.find(x=>x.id===S.viewId);if(!a){location.hash='dashboard';return''}
+ const weak=a.results.filter(r=>r.got<r.max).map(r=>QUESTIONS.find(q=>q.id===r.qid));
+ const msg=a.pct>=80?'Excellent work. Focus on the remaining slips below.':a.pct>=50?'A solid base. Tighten up the topics below to gain marks quickly.':'Keep going. Revisit the fundamentals below and retry the paper.';
+ return`<div class="card row" style="gap:1.5rem"><div class="ring" style="--p:${a.pct}"><div>${a.pct}%</div></div><div><h2>${a.score} / ${a.total} marks</h2><p class="mut" style="margin:0">${a.subject} · time used ${fmt(a.secs)}</p><p style="margin:.5rem 0 0">${msg}</p></div></div>
+<h2 style="margin-top:1.5rem">Question-by-question corrections</h2>
+${a.results.map(r=>{const q=QUESTIONS.find(x=>x.id===r.qid),c=r.got===r.max?'full':r.got?'part':'zero';return`<div class="card corr ${c}" style="margin-bottom:1rem"><div class="row sp"><b>Question ${q.id}: ${q.topic}</b><b class="${c==='full'?'ok':c==='part'?'pt':'no'}">${r.got}/${r.max}</b></div><p>${q.text}</p>
+<p style="margin:0"><span class="mut">Your answer:</span> ${r.answer?esc(r.answer):'<i>blank</i>'}</p>${r.work?`<p style="margin:0"><span class="mut">Your working:</span> ${esc(r.work)}</p>`:''}<p><span class="mut">Correct answer:</span> <b>${q.model}</b></p>
+<ul class="crit">${r.crit.map(k=>`<li class="${k.hit?'ok':'no'}">${k.hit?'✓':'✗'} ${k.t}1: ${k.d}</li>`).join('')}</ul><p style="margin:0">${r.why}</p></div>`}).join('')}
+<h2>How to improve</h2><div class="card">${weak.length?'<ul style="margin:0;padding-left:1.2rem">'+weak.map(q=>`<li><b>${q.topic}:</b> ${q.tip}</li>`).join('')+'</ul>':'<p style="margin:0">You earned every mark. Try the paper again under a shorter time limit.</p>'}</div>
+<div class="row" style="margin-top:1rem"><a class="btn" href="#exam">Try again</a><a class="btn alt" href="#dashboard">Back to dashboard</a></div>`}};
+
+/* ===== 4b. PDF UPLOAD WORKFLOW (rule-based text matching: no OCR, no AI) ===== */
+/*PURE-START*/
+const stripJunk=s=>s.replace(/\b(cao|oe|isw|ft|www|ao|soi)\b/gi,'').trim();
+function splitNums(text){const secs=[];let want=1,cur=null;
+ for(const ln of String(text).split('\n')){const m=ln.match(/^\s*(\d{1,2})(?:[.)]|\s)\s*(.*)$/);
+  if(m&&+m[1]===want&&(m[2]||ln.trim().length<4)){cur={n:want,t:m[2]||''};secs.push(cur);want++;continue}
+  if(cur)cur.t+='\n'+ln}
+ return secs.map(s=>({n:s.n,t:s.t.trim()}))}
+const STOP=new Set('for the and that with this from are was were has have had not but any all can its their there which when what will would should must than then into also only each both more most such some other award accept allow'.split(' '));
+const kws=s=>[...new Set((String(s).toLowerCase().match(/[a-z]{4,}/g)||[]).filter(w=>!STOP.has(w)).map(w=>w.replace(/(ing|ed|es|s)$/,'')))];
+function parseScheme(t,type){t=(t||'').trim();if(!t)return null;
+ const codes=[...t.matchAll(/\b(SC|[MABC])([0-9])\b/g)];
+ const lead=stripJunk((codes.length?t.slice(0,codes[0].index):t).split('\n')[0]).replace(/\s+/g,' ');
+ const crit=codes.map((c,i)=>{const d=t.slice(c.index+c[0].length,i+1<codes.length?codes[i+1].index:undefined).replace(/^\s*(for)?\s*/i,'').replace(/\s+/g,' ').trim();
+  const alts=d.split(/\s+or\s+/i).map(x=>[...new Set(x.match(/\d+(?:\.\d+)?/g)||[])]);
+  return{code:c[1],mk:+c[2],desc:d,alts:alts.every(a=>a.length)?alts:[],kw:kws(d)}});
+ let answers=null;
+ if(type==='mcq'){const m=lead.match(/^\(?([A-D])\)?\b/);answers=m?[m[1]]:null}
+ else if(lead&&lead.length<=24&&lead.split(' ').length<=5&&(/\d/.test(lead)||lead.split(' ').length===1))answers=lead.split(/\s+or\s+/i).map(x=>x.trim()).filter(Boolean);
+ const marks=crit.filter(c=>c.code!=='SC').reduce((s,c)=>s+c.mk,0)||(type==='mcq'&&answers?1:null);
+ return{raw:t,answers,crit,marks}}
+const sameAns=(a,b)=>{const n=s=>{const t=N(s),v=V(t.replace(/^(-?[\d.]+(?:\/[\d.]+)?)[a-z%²]*$/,'$1'));return /%$/.test(t)?v/100:v};const x=n(a),y=n(b);return isFinite(x)&&isFinite(y)?Math.abs(x-y)<1e-3:N(a)===N(b)};
+const hasKey=(w,k)=>new RegExp('(^|[^\\d.])'+k.replace('.','\\.')+'(?![\\d])').test(String(w).toLowerCase().replace(/[−–]/g,'-').replace(/[,$£]/g,''));
+/* API integration point: replace SchemeProvider.mark with a call to a backend/AI service returning the same shape. */
+const SchemeProvider={name:'Uploaded-scheme matcher (rule-based, not AI)',
+ async mark(q,ref,r){const a=(r.answer||'').trim(),work=(r.work||'').trim(),w=work+' '+a,flags=[],mcq=q.type==='mcq';
+  const max=q.marks??(ref&&ref.marks)??null;
+  if(!ref)flags.push('No entry for this question was found in the uploaded mark scheme.');
+  else{if(!ref.answers)flags.push('The final answer could not be identified in the scheme entry.');
+   if(q.marks!=null&&ref.marks!=null&&q.marks!==ref.marks)flags.push('Marks differ: the paper says '+q.marks+', the scheme codes add up to '+ref.marks+'.')}
+  if(max==null)flags.push('The total marks could not be determined.');
+  const expected=ref&&ref.answers?ref.answers.join(' or '):null;
+  if(!a&&!work)return{got:0,max:max||0,answer:'',work:'',crit:[],flags,expected,why:'No answer was submitted.'};
+  const correct=expected?ref.answers.some(x=>mcq?a.toUpperCase()===x:sameAns(a,x)):null;
+  const crit=ref&&!mcq?ref.crit.map(c=>({code:c.code,mk:c.mk,desc:c.desc,hit:c.alts.length?c.alts.some(al=>al.every(k=>hasKey(w,k))):null})):[];
+  if(correct===false&&crit.some(c=>c.hit===null&&/[MB]/.test(c.code)))flags.push('Some method criteria could not be checked automatically.');
+  let got=0;if(max!=null){if(correct)got=max;else if(correct===false)got=Math.min(max,crit.filter(c=>c.hit&&/[MB]/.test(c.code)).reduce((s,c)=>s+c.mk,0))}
+  const miss=crit.filter(c=>c.hit===false).map(c=>c.code+'1: '+c.desc);
+  const why=correct?'Matches the scheme’s final answer.':correct===false?'Your answer “'+a+'” does not match the scheme answer “'+expected+'”.'+(miss.length?' Not found in your working: '+miss.join('; ')+'.':'')+' Mark scheme entry: '+ref.raw.replace(/\s+/g,' ').slice(0,300):'This answer can’t be marked automatically; a teacher should check it against the scheme.';
+  return{got,max:max||0,answer:a,work,crit,flags,expected,why,correct}}};
+/* Local fallback: adds keyword-stem concept matching for text criteria and structured feedback. It does not understand meaning; wording that differs from the scheme is flagged, never guessed. */
+const LocalEngine={name:'Local rule-based engine (fallback, not AI)',async mark(q,ref,r){
+ const b=await SchemeProvider.mark(q,ref,r),w=(r.work||'')+' '+(r.answer||'');
+ if(ref&&q.type!=='mcq'&&(b.answer||b.work)){const ts=kws(w);
+  b.crit.forEach((c,i)=>{const kw=ref.crit[i].kw;if(c.hit===null&&kw.length>=2){const p=kw.filter(k=>ts.some(t=>t===k||(k.length>4&&t.startsWith(k)))).length/kw.length;c.hit=p>=.6?true:p<=.2?false:null}});
+  if(b.correct!==true&&b.max)b.got=Math.min(b.max,b.crit.filter(c=>c.hit&&/[MB]/.test(c.code)).reduce((s,c)=>s+c.mk,0));
+  if(b.crit.some(c=>c.hit===null&&/[MB]/.test(c.code))&&!b.flags.some(f=>/method criteria/.test(f)))b.flags.push('Some method criteria could not be checked automatically.')}
+ const met=b.crit.filter(c=>c.hit),miss=b.crit.filter(c=>c.hit===false),unk=b.crit.filter(c=>c.hit===null&&c.code!=='SC');
+ b.done=[...(b.correct?['Your final answer matches the scheme.']:[]),...met.map(c=>'Earned '+c.code+c.mk+': '+(c.desc||'criterion met'))];
+ b.wrong=[...(!b.answer&&!b.work?['No answer was given.']:[]),...(b.correct===false?['Your final answer differs from the scheme answer “'+b.expected+'”.']:[]),...miss.map(c=>'Not shown: '+c.code+c.mk+' '+c.desc)];
+ b.improve=[...miss.map(c=>'Show or state this in your working: '+c.desc),...unk.map(c=>'A teacher should check this point: '+(c.desc||c.code)),...(b.correct===false?['Re-check your final calculation against the method in the scheme.']:[]),...(b.correct&&!b.wrong.length?['Keep showing full working to secure method marks.']:[])];
+ b.confidence=b.flags.length?.5:.9;b.source='local';return b}};
+/*PURE-END*/
+const MAXMB=10,fmtSize=n=>n<1048576?Math.max(1,Math.round(n/1024))+' KB':(n/1048576).toFixed(1)+' MB';
+const U={paper:null,scheme:null,ans:null},ROLES={paper:'Past paper',scheme:'Marking scheme',ans:'Completed answer sheet (typed text only)'};
+const SAMPLE={paper:'Sample IGCSE Mathematics Paper\n1 Solve 3x − 7 = 11. [2]\n2 A bag has 4 red, 3 blue and 3 green counters. Find the probability of picking a counter that is not red. [2]\n3 What is 15% of 80?\nA 8\nB 12\nC 15\nD 65 [1]\n4 Find the area of a rectangle 9 cm long and 4 cm wide. [2]\n5 Explain why the angles in a triangle add up to 180°. [2]',scheme:'Mark scheme\n1 6 M1 for 3x = 18 A1\n2 3/5 or 0.6 M1 for 6/10 or 1 − 4/10 A1\n3 B\n4 36 M1 for 9 × 4 A1\n5 Valid explanation using parallel lines M1 A1',ans:'Answers\n1 x = 6\n2 0.4\n3 B\n4 36 cm²\n5 Because they just do'};
+if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+async function readPdf(f){const o={name:f.name,size:f.size,pages:0,text:'',ok:false,msg:'',thumb:''};
+ if(!/\.pdf$/i.test(f.name)||(f.type&&f.type!=='application/pdf')){o.msg='not a PDF. Only .pdf files are accepted.';return o}
+ if(!f.size){o.msg='the file is empty.';return o}
+ if(f.size>MAXMB*1048576){o.msg='file is too large ('+fmtSize(f.size)+'). The limit is '+MAXMB+' MB.';return o}
+ const buf=await f.arrayBuffer();
+ if(new TextDecoder().decode(buf.slice(0,5))!=='%PDF-'){o.msg='the content is not a valid PDF.';return o}
+ if(!window.pdfjsLib){o.msg='PDF.js did not load (check your internet connection and reload).';return o}
+ try{const pdf=await pdfjsLib.getDocument({data:buf}).promise;o.pages=pdf.numPages;
+  for(let p=1;p<=pdf.numPages;p++){const pg=await pdf.getPage(p),tc=await pg.getTextContent(),rows=[];
+   tc.items.forEach(i=>{if(!i.str.trim())return;const y=Math.round(i.transform[5]);let r=rows.find(r=>Math.abs(r.y-y)<3);if(!r)rows.push(r={y,it:[]});r.it.push({x:i.transform[4],s:i.str})});
+   rows.sort((a,b)=>b.y-a.y);o.text+=rows.map(r=>r.it.sort((a,b)=>a.x-b.x).map(i=>i.s).join(' ').replace(/\s+/g,' ').trim()).join('\n')+'\n';
+   if(p===1){try{const vp=pg.getViewport({scale:.35}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;o.thumb=c.toDataURL('image/png')}catch(e){}}}
+  if(o.text.replace(/\s/g,'').length<30)o.msg='no readable text layer. This looks like a scanned or handwritten document, and OCR is not supported yet.';else o.ok=true}
+ catch(e){o.msg=e&&e.name==='PasswordException'?'the PDF is password-protected.':'the PDF is damaged or could not be parsed.'}
+ return o}
+async function takeFile(k,f){U[k]={name:f.name,size:f.size,busy:true};render();U[k]=await readPdf(f);render()}
+function buildDraft(){const P=splitNums(U.paper.text),Sc=splitNums(U.scheme.text),A=U.ans&&U.ans.ok?splitNums(U.ans.text):[];
+ return{mins:30,qs:P.map(p=>{const mm=[...p.t.matchAll(/\[(\d{1,2})(?:\s*marks?)?\]|\((\d{1,2})\s*marks?\)/gi)],
+  marks=mm.length?mm.reduce((s,m)=>s+(+m[1]||+m[2]),0):null,
+  type=['A','B','C','D'].filter(L=>new RegExp('(^|\\n)\\s*'+L+'[.)]?\\s+\\S').test(p.t)).length>=3?'mcq':'written',
+  sc=Sc.find(s=>s.n===p.n),an=A.find(s=>s.n===p.n);let pre='';
+  if(an)pre=type==='mcq'?((an.t.match(/^\(?([A-D])\)?\b/)||[])[1]||''):an.t.split('\n')[0];
+  return{n:p.n,text:p.t,marks,type,scheme:sc?sc.t:'',pre}})}}
+function startCustom(){const D=S.draft;S.cx={qs:D.qs.map(q=>({...q,ref:parseScheme(q.scheme,q.type)})),left:D.mins*60,total:D.mins*60,r:{}};
+ D.qs.forEach(q=>S.cx.r[q.n]={answer:q.pre,work:''});clearInterval(S.ctimer);
+ S.ctimer=setInterval(()=>{if(!S.cx)return;S.cx.left--;const t=$('#ctm');if(t){t.textContent=fmt(S.cx.left);$('#ctbox').classList.toggle('low',S.cx.left<=120)}if(S.cx.left<=0)submitCustom()},1000);location.hash='sit'}
+async function submitCustom(){const E=S.cx;if(!E)return;clearInterval(S.ctimer);S.cx=null;const results=[];
+ for(const q of E.qs){const r=await markOne(q,q.ref,E.r[q.n]||{});results.push({...r,qid:'c'+q.n,n:q.n,text:q.text,type:q.type})}
+ const score=results.reduce((s,r)=>s+r.got,0),total=results.reduce((s,r)=>s+r.max,0);
+ const att={id:Date.now(),date:new Date().toISOString(),subject:'Uploaded paper: '+((U.paper&&U.paper.name)||'paper'),custom:true,score,total,pct:total?Math.round(score/total*100):0,secs:E.total-Math.max(E.left,0),results};
+ DB.attempts.push(att);save();S.viewId=att.id;location.hash='report'}
+const rtxt=a=>'AI Past Paper Marker: results report\n'+a.subject+'\n'+new Date(a.date).toLocaleString()+'\nScore: '+a.score+' / '+a.total+' ('+a.pct+'%)\nMarking: '+SchemeProvider.name+'. Questions marked [MANUAL REVIEW] have provisional marks.\n\n'+a.results.map(r=>'Q'+r.n+': '+r.got+'/'+r.max+(r.flags.length&&!r.reviewed?' [MANUAL REVIEW]':'')+'\n  Question: '+r.text.replace(/\s+/g,' ')+'\n  Your answer: '+(r.answer||'(blank)')+'\n  Scheme answer: '+(r.expected||'(unclear)')+'\n  '+r.why+((r.done||[]).length?'\n  Did well: '+r.done.join('; '):'')+((r.wrong||[]).length?'\n  Went wrong: '+r.wrong.join('; '):'')+((r.improve||[]).length?'\n  Improve: '+r.improve.join('; '):'')+(r.adj?'\n  Admin note: '+r.adj.reason:'')+(r.flags.length?'\n  Flags: '+r.flags.join(' '):'')).join('\n\n');
+async function dlReport(a){const name='results-report.html',data='<!doctype html><meta charset="utf-8"><title>Results report</title><pre style="font:14px/1.6 system-ui,sans-serif;white-space:pre-wrap;max-width:720px;margin:2rem auto;padding:0 1rem">'+esc(rtxt(a))+'</pre>',m=$('#dlmsg');
+ try{const d=window.claude&&claude.use?await claude.use('downloads'):null;if(d){await d.save({filename:name,data});m.textContent='Report ready. Confirm the save prompt.';return}}catch(e){if(e&&e.code==='declined'){m.textContent='Download cancelled.';return}}
+ const u=URL.createObjectURL(new Blob([data],{type:'text/html'})),l=document.createElement('a');l.href=u;l.download=name;l.click();setTimeout(()=>URL.revokeObjectURL(u),2000);m.textContent='Report downloaded.'}
+
+const dz=k=>{const u=U[k];return`<div class="card drop" data-k="${k}"><b>${ROLES[k]}</b> <span class="tag">${k==='ans'?'Optional':'Required'}</span>
+${u?`<p style="margin:.6rem 0 0;word-break:break-all"><b>${esc(u.name)}</b></p><p class="mut" style="margin:0">${fmtSize(u.size)}${u.pages?' · '+u.pages+' page'+(u.pages>1?'s':''):''}</p>${u.busy?'<p class="mut">Reading…</p>':u.ok?`<p class="ok" style="margin:.3rem 0">✓ Readable · ${u.text.length.toLocaleString()} characters extracted</p>`:`<p class="no" style="margin:.3rem 0">✗ Cannot be read: ${esc(u.msg)}</p>`}${u.thumb?`<img class="thumb" alt="First page of ${esc(u.name)}" src="${u.thumb}">`:''}${u.ok?`<details><summary>Preview extracted text</summary><pre class="pre">${esc(u.text.slice(0,1500))}</pre></details>`:''}<p><button class="btn alt" data-rm="${k}">Remove</button></p>`:`<p class="mut">Drop a PDF here or choose a file (max ${MAXMB} MB).</p><input type="file" accept=".pdf,application/pdf" data-f="${k}" aria-label="${ROLES[k]}">`}</div>`};
+const ok=u=>u&&u.ok;
+Object.assign(V_,{
+upload(){return`<h2>Upload your own papers</h2><p class="mut">PDFs must contain typed text. Scanned or handwritten pages can’t be read: handwriting recognition (OCR) is not supported yet. Marking compares your answers with the uploaded scheme using simple number and text matching. It is not AI marking.</p>
+<div class="grid">${['paper','scheme','ans'].map(dz).join('')}</div>
+<div class="row"><button class="btn" id="go" ${ok(U.paper)&&ok(U.scheme)?'':'disabled'}>Extract and review</button><button class="btn alt" id="smp">Load built-in sample text</button></div>
+<p class="mut" id="aistat" role="status">Checking the AI marking service…</p><p class="mut">Upload the paper and the marking scheme to continue. The answer sheet is optional and only pre-fills typed answers.</p>`},
+review(){const D=S.draft;if(!D){location.hash='upload';return''}
+ const miss=D.qs.filter(q=>!q.scheme).length;
+ return`<h2>Review extracted content</h2><div class="card soft"><b>${D.qs.length} question${D.qs.length===1?'':'s'} found</b>${miss?`, <span class="no">${miss} without a mark scheme entry</span>`:''}.${U.ans?(U.ans.ok?' Answer sheet text was used to pre-fill answers.':' The answer sheet could not be read, so you will type answers yourself.'):''}
+<p class="mut" style="margin:.4rem 0 0">Extraction is automatic and can be wrong. Fix question text, marks, type or scheme text below before starting. Nothing is marked from criteria that aren’t in the scheme.</p></div>
+${D.qs.length?'':'<div class="warn">No numbered questions were detected. Check the PDF has typed text with questions numbered 1, 2, 3…</div>'}
+${D.qs.map((q,i)=>`<div class="card" style="margin-top:1rem"><div class="row sp"><b>Question ${q.n}</b><span class="tag ${q.scheme?'':'no'}">${q.scheme?'Scheme entry found':'No scheme entry'}</span></div>
+<label for="t${i}">Question text</label><textarea id="t${i}" data-i="${i}" data-d="text">${esc(q.text)}</textarea>
+<div class="row"><div><label for="m${i}">Marks</label><input type="number" min="0" max="50" id="m${i}" data-i="${i}" data-d="marks" value="${q.marks??''}" placeholder="?" style="width:90px"></div>
+<div><label for="y${i}">Answer type</label><select id="y${i}" data-i="${i}" data-d="type"><option value="written" ${q.type==='written'?'selected':''}>Written</option><option value="mcq" ${q.type==='mcq'?'selected':''}>Multiple choice</option></select></div></div>
+<label for="s${i}">Mark scheme text (used as the marking reference)</label><textarea id="s${i}" data-i="${i}" data-d="scheme" placeholder="Paste the scheme entry here if it was not extracted">${esc(q.scheme)}</textarea></div>`).join('')}
+<details style="margin-top:1rem"><summary>Show raw extracted text</summary><pre class="pre">${esc('PAPER\n'+U.paper.text+'\n\nSCHEME\n'+U.scheme.text)}</pre></details>
+<div class="row" style="margin-top:1rem"><label for="mins" style="margin:0">Time allowed (minutes)</label><input type="number" id="mins" min="1" max="240" value="${D.mins}" style="width:90px"><button class="btn" id="startc" ${D.qs.length?'':'disabled'}>Start exam</button><a class="btn alt" href="#upload">Back</a></div>`},
+sit(){const E=S.cx;if(!E){location.hash='upload';return''}
+ return`<div class="timer" id="ctbox"><span>Uploaded paper</span><b id="ctm">${fmt(E.left)}</b></div>${U.ans&&U.ans.ok?'<p class="mut">Answers were pre-filled from your answer sheet. Check them and edit if needed.</p>':''}
+${E.qs.map(q=>{const r=E.r[q.n];return`<div class="card" style="margin-bottom:1rem"><div class="row sp"><h3 style="margin:0">Section ${q.n}</h3><span class="tag">${q.marks??'?'} marks</span></div><p class="pre" style="margin:.6rem 0">${esc(q.text)}</p>
+${q.type==='mcq'?['A','B','C','D'].map(L=>`<label class="opt"><input type="radio" name="o${q.n}" value="${L}" data-cq="${q.n}" data-cf="answer" ${r.answer===L?'checked':''}> Option ${L}</label>`).join(''):`<label for="cw${q.n}">Working (optional)</label><textarea id="cw${q.n}" data-cq="${q.n}" data-cf="work">${esc(r.work)}</textarea><label for="ca${q.n}">Final answer</label><input type="text" id="ca${q.n}" data-cq="${q.n}" data-cf="answer" value="${esc(r.answer)}" autocomplete="off">`}</div>`}).join('')}
+<div class="row"><button class="btn" id="csub">Submit for marking</button><button class="btn alt" id="cquit">Abandon paper</button></div>`},
+report(){const a=DB.attempts.find(x=>x.id===S.viewId&&x.custom);if(!a){location.hash='upload';return''}
+ const nr=a.results.filter(r=>r.flags.length&&!r.reviewed).length;
+ return`<div class="card row" style="gap:1.5rem"><div class="ring" style="--p:${a.pct}"><div>${a.pct}%</div></div><div><h2>${a.score} / ${a.total} marks</h2><p class="mut" style="margin:0">${esc(a.subject)} · time used ${fmt(a.secs)}</p>${nr?`<p class="pt" style="margin:.5rem 0 0"><b>${nr} question${nr>1?'s need':' needs'} manual review.</b> Those marks are provisional and the total may change.</p>`:''}</div></div>
+<div class="row" style="margin:1rem 0"><button class="btn" id="dl">Download results report</button><a class="btn alt" href="#upload">Upload another paper</a><span id="dlmsg" class="mut" role="status"></span></div>
+<h2>Question-by-question marking</h2>
+${a.results.map(r=>{const c=r.flags.length&&!r.reviewed?'review':r.got===r.max&&r.max?'full':r.got?'part':'zero';return`<div class="card corr ${c}" style="margin-bottom:1rem"><div class="row sp"><b>Question ${r.n}</b><b>${r.got}/${r.max}${r.reviewed?' (admin reviewed)':r.flags.length?' (provisional)':''}</b></div><p class="pre">${esc(r.text)}</p>
+<p style="margin:0"><span class="mut">Your answer:</span> ${r.answer?esc(r.answer):'<i>blank</i>'}</p>${r.work?`<p style="margin:0"><span class="mut">Your working:</span> ${esc(r.work)}</p>`:''}<p><span class="mut">Scheme answer:</span> <b>${r.expected?esc(r.expected):'not identified'}</b></p>
+${r.crit.length?`<ul class="crit">${r.crit.map(k=>`<li class="${k.hit?'ok':k.hit===false?'no':'pt'}">${k.hit?'✓':k.hit===false?'✗':'?'} ${k.code}${k.mk}: ${esc(k.desc||'(no description in scheme)')}${k.hit===null?' (can’t be checked automatically)':''}</li>`).join('')}</ul>`:''}
+${r.flags.map(f=>`<div class="warn"><b>Manual review:</b> ${esc(f)}</div>`).join('')}<p style="margin:0">${esc(r.why)}</p>${fb('What you did well',r.done,'ok')}${fb('What went wrong',r.wrong,'no')}${fb('How to improve',r.improve,'')}${r.adj?'<div class="warn"><b>Admin review:</b> '+esc(r.adj.reason)+'</div>':''}<p class="mut" style="margin:.5rem 0 0">Marked by: ${r.source==='ai'?'AI service':'local rule-based engine'}${r.confidence!=null?' · confidence '+Math.round(r.confidence*100)+'%':''}</p></div>`}).join('')}
+<p class="note">This is an unofficial practice tool. Marks are not Cambridge-certified. Explanations are based on the uploaded mark scheme only. No criteria are invented when the scheme is unclear; those questions are flagged for a teacher.</p>`}});
+const CB={
+ upload($$){$$('[data-f]',el=>el.onchange=()=>el.files[0]&&takeFile(el.dataset.f,el.files[0]));
+  $$('.drop',d=>{d.ondragover=e=>{e.preventDefault();d.classList.add('over')};d.ondragleave=()=>d.classList.remove('over');d.ondrop=e=>{e.preventDefault();d.classList.remove('over');if(!U[d.dataset.k]&&e.dataTransfer.files[0])takeFile(d.dataset.k,e.dataTransfer.files[0])}});
+  $$('[data-rm]',b=>b.onclick=()=>{U[b.dataset.rm]=null;render()});
+  $('#go').onclick=()=>{S.draft=buildDraft();location.hash='review'};
+  $('#smp').onclick=()=>{for(const k of ['paper','scheme','ans'])U[k]={name:'built-in sample '+k+' text (not a PDF)',size:SAMPLE[k].length,pages:1,text:SAMPLE[k],ok:true,msg:''};render()}},
+ review($$){$$('[data-d]',el=>el.oninput=()=>{const q=S.draft.qs[+el.dataset.i],d=el.dataset.d;q[d]=d==='marks'?(el.value===''?null:+el.value):el.value;if(d==='scheme'||d==='type'){const t=el.closest('.card').querySelector('.tag');t.textContent=q.scheme.trim()?'Scheme entry found':'No scheme entry'}});
+  $('#mins').oninput=e=>S.draft.mins=Math.max(1,+e.target.value||30);$('#startc').onclick=startCustom},
+ sit($$){$$('[data-cq]',el=>el.oninput=()=>{S.cx.r[el.dataset.cq][el.dataset.cf]=el.value});
+  $('#csub').onclick=submitCustom;$('#cquit').onclick=()=>{clearInterval(S.ctimer);S.cx=null;location.hash='upload'}},
+ report(){$('#dl').onclick=()=>dlReport(DB.attempts.find(x=>x.id===S.viewId))}};
+
+/* ===== 4c. AI CLIENT (talks only to the backend; no API key ever exists in this file) ===== */
+const AI={base:'',status:'checking',use:true};
+async function aiHealth(){try{const r=await fetch(AI.base+'/api/health',{signal:AbortSignal.timeout(4000)}),j=await r.json();AI.status=j.aiConfigured?'ready':'nokey'}catch(e){AI.status='offline'}}
+function fromAI(j,q,r){const flags=[...(j.flags||[])];if(j.needsReview&&!flags.length)flags.push('Marked as needing human review.');
+ return{got:j.awarded,max:j.max,answer:r.answer||'',work:r.work||'',expected:j.expected,why:j.explanation,flags,confidence:j.confidence,source:'ai',done:j.correct,wrong:j.wrong,improve:j.improve,
+  crit:j.awards.map(a=>({code:(a.criterion||'?')[0],mk:a.maxMarks,hit:a.met,desc:a.justification+(a.evidence?' (evidence: “'+a.evidence+'”)':'')}))}}
+async function markOne(q,ref,r){
+ if(AI.use&&AI.status==='ready'){try{
+  const res=await fetch(AI.base+'/api/mark',{method:'POST',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(35000),body:JSON.stringify({question:{id:q.n,text:q.text,marks:q.marks,type:q.type},scheme:{raw:ref?ref.raw:'',answers:ref?ref.answers:null,criteria:ref?ref.crit.map(c=>({code:c.code,marks:c.mk,desc:c.desc})):[]},student:{answer:r.answer||'',work:r.work||''}})});
+  if(!res.ok)throw new Error((await res.json().catch(()=>({}))).error||'HTTP '+res.status);
+  return fromAI(await res.json(),q,r)}catch(e){const l=await LocalEngine.mark(q,ref,r);l.flags.push('AI marking failed ('+e.message+'). The local engine was used instead.');return l}}
+ return LocalEngine.mark(q,ref,r)}
+const fb=(t,a,c)=>a&&a.length?'<p style="margin:.6rem 0 .2rem"><b>'+t+'</b></p><ul class="crit">'+a.map(x=>'<li class="'+c+'">'+esc(x)+'</li>').join('')+'</ul>':'';
+function showAI(){const e=$('#aistat');if(!e)return;const m={ready:'AI marking is connected. Answers are marked by Claude through the backend, and the local engine is the fallback.',nokey:'The backend is running but has no API key. The local rule-based engine will be used.',offline:'No AI backend found. The local rule-based engine will be used. See the README to run the backend.',checking:'Checking the AI marking service…'};
+ e.innerHTML=esc(m[AI.status])+(AI.status==='ready'?'<label class="opt"><input type="checkbox" id="aiuse" '+(AI.use?'checked':'')+'> Use AI marking</label>':'');const c=$('#aiuse');if(c)c.onchange=()=>AI.use=c.checked}
+const _up=CB.upload;CB.upload=$$=>{_up($$);aiHealth().then(showAI)};
+
+/* ===== 4d. ADMIN REVIEW (prototype: no login, so anyone using this browser can change marks) ===== */
+const adminItems=()=>{const o=[];DB.attempts.filter(a=>a.custom).forEach(a=>a.results.forEach((r,i)=>o.push({a,r,i})));return o};
+Object.assign(V_,{admin(){const all=adminItems(),pend=all.filter(x=>x.r.flags.length&&!x.r.reviewed),done=all.filter(x=>x.r.reviewed);
+ const card=x=>{const k=x.a.id+'_'+x.i,r=x.r;return`<div class="card" style="margin-bottom:1rem"><div class="row sp"><b>Q${r.n}</b><span class="tag">${r.source==='ai'?'AI':'Local engine'} · confidence ${Math.round((r.confidence??.5)*100)}%</span></div><p class="mut" style="margin:.2rem 0">${esc(x.a.subject)}</p><p class="pre">${esc(r.text)}</p>
+<p><b>Student:</b> ${esc(r.answer||'(blank)')}${r.work?' · working: '+esc(r.work):''}<br><b>Scheme answer:</b> ${esc(r.expected||'not identified')}</p>${r.flags.map(f=>`<div class="warn">${esc(f)}</div>`).join('')}<p>${esc(r.why)}</p>
+<label for="am${k}">Marks (0 to ${r.max})</label><input type="number" id="am${k}" min="0" max="${r.max}" value="${r.got}" style="width:90px"><label for="ar${k}">Reason (required)</label><textarea id="ar${k}">${esc(r.adj?r.adj.reason:'')}</textarea><p><button class="btn" data-adm="${k}">${r.reviewed?'Update review':'Confirm marks'}</button> <span id="ae${k}" class="no"></span></p></div>`};
+ return`<h2>Admin review</h2><p class="mut">Uncertain or low-confidence decisions are listed here. Adjust the marks and record a reason. Prototype only: add authentication before real use.</p>
+<h3>Needs review (${pend.length})</h3>${pend.length?pend.map(card).join(''):'<div class="card"><p class="mut" style="margin:0">Nothing waiting. Flagged decisions from uploaded papers appear here.</p></div>'}
+<h3 style="margin-top:1.5rem">Reviewed (${done.length})</h3>${done.map(card).join('')}`}});
+CB.admin=$$=>$$('[data-adm]',b=>b.onclick=()=>{const k=b.dataset.adm,[id,i]=k.split('_'),a=DB.attempts.find(x=>x.id===+id),r=a.results[+i],m=Math.round(+$('#am'+k).value*100)/100,why=$('#ar'+k).value.trim();
+ if(!(m>=0&&m<=r.max)){$('#ae'+k).textContent='Marks must be between 0 and '+r.max+'.';return}
+ if(!why){$('#ae'+k).textContent='Add a reason.';return}
+ if(r.orig==null)r.orig=r.got;r.got=m;r.adj={marks:m,reason:why,date:new Date().toISOString()};r.reviewed=true;
+ a.score=a.results.reduce((s,x)=>s+x.got,0);a.pct=a.total?Math.round(a.score/a.total*100):0;save();render()});
+
+/* ===== 5. ROUTER + EVENTS ===== */
+function render(){let v=(location.hash||'#home').slice(1);if(!V_[v])v='home';
+ if(v==='marking'&&!S.marking){location.hash='dashboard';return}
+ app.innerHTML=V_[v]();
+ document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v||(v==='results'||v==='marking')&&a.dataset.v==='dashboard'||(v==='review'||v==='sit'||v==='report')&&a.dataset.v==='upload'));
+ window.scrollTo(0,0);bind(v)}
+function bind(v){const $$=(s,f)=>document.querySelectorAll(s).forEach(f);if(CB[v])CB[v]($$);
+ if(v==='dashboard'){$('#svn').onclick=()=>{DB.name=$('#nm').value.trim().slice(0,30);save();render()};
+  $$('[data-view]',b=>b.onclick=()=>{S.viewId=+b.dataset.view;location.hash=(DB.attempts.find(a=>a.id===S.viewId)||{}).custom?'report':'results'});
+  const c=$('#clr');if(c)c.onclick=()=>{DB.attempts=[];save();render()}}
+ if(v==='exam'){const b=$('#begin');if(b)b.onclick=startExam;
+  $$('[data-q]',el=>el.oninput=()=>{const r=S.exam.r;(r[el.dataset.q]=r[el.dataset.q]||{})[el.dataset.f]=el.value});
+  const s=$('#submit');if(s){s.onclick=submitExam;$('#quit').onclick=()=>{clearInterval(S.timer);S.exam=null;render()}}}}
+function startExam(){S.exam={left:EXAM_SECS,r:{}};clearInterval(S.timer);
+ S.timer=setInterval(()=>{S.exam.left--;const t=$('#tm');if(t){t.textContent=fmt(S.exam.left);$('#tbox').classList.toggle('low',S.exam.left<=120)}
+  if(S.exam.left<=0)submitExam()},1000);render()}
+async function submitExam(){if(!S.exam)return;clearInterval(S.timer);
+ const E=S.exam;S.exam=null;S.marking=true;location.hash='marking';
+ await new Promise(r=>setTimeout(r,30));
+ const res=await markPaper(E.r,(id,st,r)=>{const d=$('#d'+id),m=$('#m'+id);if(!d)return;
+  if(st==='run'){d.className='dot run';m.textContent='marking…'}else{d.className='dot done';d.textContent='✓';m.className='';m.textContent=r.got+'/'+r.max}});
+ const score=res.reduce((s,r)=>s+r.got,0);
+ const att={id:Date.now(),date:new Date().toISOString(),subject:'IGCSE Mathematics',score,total:TOTAL,pct:Math.round(score/TOTAL*100),secs:EXAM_SECS-Math.max(E.left,0),results:res};
+ DB.attempts.push(att);save();S.viewId=att.id;S.marking=null;
+ const b=$('#seeres');if(b){b.disabled=false;b.onclick=()=>{location.hash='results'}}}
+window.addEventListener('hashchange',render);render();
+</script></body></html>
