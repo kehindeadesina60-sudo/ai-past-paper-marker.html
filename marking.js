@@ -8,7 +8,7 @@ async function callClaude(req, { env = process.env, fetchImpl = fetch } = {}) {
   }
 
   const body = JSON.stringify({
-    model: 'claude-sonnet-5',
+    model: 'claude-sonnet-5-5',
     max_tokens: 1500,
     system: SYSTEM,
     messages: [{
